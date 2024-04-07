@@ -100,7 +100,7 @@ setup(
     author='Zaimir',
     author_email='zaimirpuerta2711@gmail.com',
     url='https://github.com/ZaimirPuerta',
-    download_url="https://github.com/ZaimirPuerta/imageManager/archive/refs/heads/main.zip",
+    download_url="https://github.com/ZaimirPuerta/LeerImagenes/",
     keywords=['LeerImagenes','Leer','Imagenes','leer','imagenes', "read", "images"],
     install_requires=[
         'tkinter',
