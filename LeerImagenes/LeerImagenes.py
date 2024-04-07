@@ -1,6 +1,7 @@
 __VERSION__ = "1.0.0.0"
 import ctypes
 import sys
+import os
 from typing import Any, Dict, Optional, Tuple, Union
 
 if sys.platform.startswith("win"):
@@ -8,8 +9,14 @@ if sys.platform.startswith("win"):
 elif sys.platform.startswith("linux"):
    leerImagenesLib_Name = "LeerImagenes.so"
 
+_MOD_DIRECTION = os.path.dirname(__file__)
+_MOD_DIRECTIONS = [
+   os.path.join(_MOD_DIRECTION, ""), 
+   os.path.join(_MOD_DIRECTION, "./bin/"),
+   os.path.join(_MOD_DIRECTION, "./lib/"),
+]
 
-_DIRECTIONS = ["", "./", "./bin/", "./lib/"]
+_DIRECTIONS = ["", "./", "./bin/", "./lib/"] + _MOD_DIRECTIONS
 _loaded = False
 for _dir in _DIRECTIONS:
     try:
