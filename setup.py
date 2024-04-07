@@ -99,7 +99,8 @@ setup(
     #long_description_content_type = "text/markdown",
     author='Zaimir',
     author_email='zaimirpuerta2711@gmail.com',
-    url='https://github.com/ZaimirPuerta/',
+    url='https://github.com/ZaimirPuerta',
+    download_url="https://github.com/ZaimirPuerta/imageManager/archive/refs/heads/main.zip",
     keywords=['LeerImagenes','Leer','Imagenes','leer','imagenes', "read", "images"],
     install_requires=[
         'tkinter',
