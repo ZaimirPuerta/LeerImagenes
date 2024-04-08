@@ -3,32 +3,96 @@ import ctypes
 import sys
 import os
 from typing import Any, Dict, Optional, Tuple, Union
+import base64
+
+OTHER_PLATFORM = 0
+WINDOW_PLATFORM = 1
+LINUX_PLATFORM = 2
+
+_USE_PLATFORM = OTHER_PLATFORM
+
+LIBRARY_WINDOW = "LeerImagenes.dll"
+LIBRARY_LINUX  = "LeerImagenes.so"
 
 if sys.platform.startswith("win"):
-   leerImagenesLib_Name ="LeerImagenes.dll"
+   leerImagenesLib_Name = LIBRARY_WINDOW
+   _USE_PLATFORM = WINDOW_PLATFORM
 elif sys.platform.startswith("linux"):
+   leerImagenesLib_Name = LIBRARY_LINUX
+   _USE_PLATFORM = LINUX_PLATFORM
+else:
    leerImagenesLib_Name = "LeerImagenes.so"
+   _USE_PLATFORM = OTHER_PLATFORM
 
 _MOD_DIRECTION = os.path.dirname(__file__)
 _MOD_DIRECTIONS = [
    os.path.join(_MOD_DIRECTION, ""), 
-   os.path.join(_MOD_DIRECTION, "./bin/"),
-   os.path.join(_MOD_DIRECTION, "./lib/"),
+   os.path.join(_MOD_DIRECTION, "bin/"),
+   os.path.join(_MOD_DIRECTION, "lib/"),
 ]
 
 _DIRECTIONS = ["", "./", "./bin/", "./lib/"] + _MOD_DIRECTIONS
+
 _loaded = False
-for _dir in _DIRECTIONS:
-    try:
-        leerImagenesLib = ctypes.cdll.LoadLibrary(_dir+leerImagenesLib_Name)
-        _loaded = True
-        break;
-    except:
-        continue
+leerImagenesLib = None
+def _loadExternalLibrary():
+   global _loaded
+   global leerImagenesLib
+   for _dir in _DIRECTIONS:
+      try:
+         leerImagenesLib = ctypes.cdll.LoadLibrary(_dir+leerImagenesLib_Name)
+         _loaded = True
+         break;
+      except:
+         continue
+   return
+   
+def _repairExternalLibrary():
+   global _loaded
+   try:
+       from ._binary import WINDOWS as BIN_WINDOWS
+       from ._binary import LINUX as BIN_LINUX
+       
+       directory = os.path.join(_MOD_DIRECTION, "bin/")
+       try: os.mkdir(directory)
+       except: pass
+       window = directory + LIBRARY_WINDOW
+       linux = directory + LIBRARY_LINUX
+
+       with open(window, "wb") as f:
+          f.write(base64.b64decode(BIN_WINDOWS))
+          
+       with open(linux, "wb") as f:
+          f.write(base64.b64decode(BIN_LINUX))
+   except:
+      pass
+   return
+
+_loadExternalLibrary()
+
+if not _loaded:
+   _repairExternalLibrary()
+   _loadExternalLibrary()
 
 if not _loaded:
     print( "No se encuentra la libreria \"" + leerImagenesLib_Name +"\"" );
-    exit();
+    #exit();
+    
+# ESTA FUNCION PERMITE AL USUARIO OPTENER EL ARCHIVO BINARIO CORRESPONDIENTE Y GUARDARLO EN UN ARCHIVO
+def exportBinary(fname:str, platform=None):
+   if platform is None:
+      platform = _USE_PLATFORM
+   try:
+       if platform == WINDOW_PLATFORM:
+          from ._binary import WINDOWS as BIN
+       else:
+          from ._binary import LINUX as BIN
+       
+       with open(fname, "wb") as f:
+          f.write(base64.b64decode(BIN))
+   except:
+      return False
+   return True
 
 DWORD = ctypes.c_uint;
 BYTE = ctypes.c_ubyte
