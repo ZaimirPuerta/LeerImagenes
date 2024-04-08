@@ -88,36 +88,25 @@ def read(file_name=None, is_encoding=True, ignore_raises=False):
                          file_name=file_name,
                          ignore_raises=ignore_raises))
 
+PACKAGES = find_packages()
+
+DLL_WINDOWS = "./bin/LeerImagenes.dll"
+DLL_LINUX = "./bin/LeerImagenes.so"
 
 setup(
     name='LeerImagenes',
     version=VERSION,
     license=read("LICENSE", is_encoding=False, ignore_raises=True),
-    packages=find_packages(),
+    packages=PACKAGES,
     description='Light image reader   |   Lector ligero de imagenes',
     long_description=read("README.rst"),
-    #long_description_content_type = "text/markdown",
+    long_description_content_type = "text/markdown",
     author='Zaimir',
     author_email='zaimirpuerta2711@gmail.com',
     url='https://github.com/ZaimirPuerta',
     download_url="https://github.com/ZaimirPuerta/LeerImagenes/",
     keywords=['LeerImagenes','Leer','Imagenes','leer','imagenes', "read", "images"],
-    install_requires=[
-        'tkinter',
-        'customtkinter'
-    ],
+    install_requires=[],
     setup_requires=['requests'],
-    tests_require=[
-        'pytest',
-        'pytest-cov',
-        'pytest-html',
-        'pytest-dependency',
-    ],
-    entry_points={ },
-    classifiers=[
-        'Development Status :: 4 - Beta',
-        'Intended Audience :: Developers',
-        'Topic :: Software Development :: Build Tools',
-        'Programming Language :: Python :: 3.8',
-    ],
+
 )
